@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block judul %}Dasbor Security{% endblock %}
+
+{% block konten %}
+<h1>Halo {{ user.nim }} {{ user.username }}</h1>
+<p class="muted">Dasbor Security. Menu di bawah akan aktif pada iterasi berikutnya.</p>
+
+<div class="grid">
+    <div class="tile tile-nonaktif"><h2>Daftar Laporan</h2><p>Iterasi 2</p></div>
+    <div class="tile tile-nonaktif"><h2>Catat Barang Temuan</h2><p>Iterasi 3</p></div>
+    <div class="tile tile-nonaktif"><h2>Daftar dan Ubah Barang Temuan</h2><p>Iterasi 3</p></div>
+    <div class="tile tile-nonaktif"><h2>Cari dan Cocokkan</h2><p>Iterasi 4</p></div>
+    <div class="tile tile-nonaktif"><h2>Daftar Klaim</h2><p>Iterasi 5</p></div>
+    <div class="tile tile-nonaktif"><h2>Pengembalian dan Serah Terima</h2><p>Iterasi 5</p></div>
+    <div class="tile tile-nonaktif"><h2>Riwayat Verifikasi dan Pengembalian</h2><p>Iterasi 5</p></div>
+</div>
+{% endblock %}

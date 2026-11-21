@@ -1,0 +1,36 @@
+{% load static %}<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block judul %}Beranda{% endblock %} - Barang Hilang dan Temuan</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="{% block kelas_body %}{% endblock %}">
+    <header class="topbar">
+        <a class="brand" href="{% url 'beranda' %}"><span class="auth-brand-mark">UE</span><span>LOST &amp; FOUND<small>Universitas Esa Unggul</small></span></a>
+        {% if user.is_authenticated %}
+            <div class="user">
+                <span class="user-nama">{{ user.nama }} <small>({{ user.get_role_display }})</small></span>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ghost">Keluar</button>
+                </form>
+            </div>
+        {% endif %}
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            <div class="site-messages" aria-live="polite">
+                {% for pesan in messages %}
+                    <div class="alert {% if pesan.tags == 'success' %}alert-ok{% else %}alert-info{% endif %}" role="status">{{ pesan }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block konten %}{% endblock %}
+    </main>
+
+    <footer class="footer">Kelompok 6 &middot; Universitas Esa Unggul</footer>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block judul %}Masuk{% endblock %}
+{% block kelas_body %}auth-body{% endblock %}
+
+{% block konten %}
+<section class="auth-card auth-login-card">
+    <a class="auth-back-link" href="{% url 'beranda' %}">← Kembali ke beranda</a>
+    <div class="auth-heading">
+        <span class="auth-symbol" aria-hidden="true">↗</span>
+        <p class="auth-kicker">Selamat datang kembali</p>
+        <h1>Masuk ke akun Anda</h1>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-error" role="alert">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+
+    <form method="post" class="auth-form" novalidate>
+        {% csrf_token %}
+        <label for="{{ form.nim.id_for_label }}">NIM</label>
+        {{ form.nim }}
+        {% for error in form.nim.errors %}<div class="auth-field-error">{{ error }}</div>{% endfor %}
+
+        <label for="{{ form.password.id_for_label }}">Kata sandi</label>
+        {{ form.password }}
+        {% for error in form.password.errors %}<div class="auth-field-error">{{ error }}</div>{% endfor %}
+
+        <button type="submit" class="btn auth-submit">Masuk <span aria-hidden="true">→</span></button>
+    </form>
+
+    <p class="auth-forgot"><a href="{% url 'lupa_password' %}">Lupa kata sandi?</a></p>
+    <div class="auth-switch">Belum punya akun? <a href="{% url 'registrasi' %}">Daftar sekarang</a></div>
+</section>
+{% endblock %}

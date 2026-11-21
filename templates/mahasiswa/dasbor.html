@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block judul %}Dasbor Mahasiswa{% endblock %}
+
+{% block konten %}
+<h1>Halo {{ user.nim }} {{ user.username }}</h1>
+<p class="muted">Dasbor Mahasiswa. Menu di bawah akan aktif pada iterasi berikutnya.</p>
+
+<div class="grid">
+    <div class="tile tile-nonaktif"><h2>Buat Laporan Kehilangan</h2><p>Iterasi 2</p></div>
+    <div class="tile tile-nonaktif"><h2>Laporan Saya</h2><p>Iterasi 2</p></div>
+    <div class="tile tile-nonaktif"><h2>Daftar Barang Temuan</h2><p>Iterasi 3</p></div>
+    <div class="tile tile-nonaktif"><h2>Ajukan Klaim</h2><p>Iterasi 5</p></div>
+</div>
+{% endblock %}

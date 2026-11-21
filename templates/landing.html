@@ -1,0 +1,126 @@
+{% load static %}<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sistem informasi barang hilang dan temuan Universitas Esa Unggul.">
+    <title>Lost &amp; Found Kampus — Esa Unggul</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="landing-body">
+    <a class="skip-link" href="#konten">Lewati ke konten utama</a>
+    <header class="landing-nav" id="navbar">
+        <div class="landing-nav-inner">
+            <a class="landing-brand" href="{% url 'beranda' %}" aria-label="Beranda Lost and Found Esa Unggul">
+                <span class="brand-mark">UE</span>
+                <span><strong>LOST &amp; FOUND</strong><small>Universitas Esa Unggul</small></span>
+            </a>
+            <nav class="landing-links" aria-label="Navigasi utama">
+                <a href="#beranda">Beranda</a><a href="#cara-kerja">Cara Kerja</a><a href="#faq">FAQ</a>
+            </nav>
+            <div class="landing-actions">
+                <a class="btn btn-outline" href="{% url 'login' %}">Masuk</a>
+                <a class="btn btn-orange" href="{% url 'registrasi' %}">Daftar</a>
+            </div>
+            <button class="menu-toggle" id="menuBtn" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
+        </div>
+        <nav class="mobile-menu" id="mobileMenu" aria-label="Navigasi mobile" hidden>
+            <a href="#beranda">Beranda</a><a href="#cara-kerja">Cara Kerja</a><a href="#faq">FAQ</a>
+            <div class="mobile-actions"><a class="btn btn-outline" href="{% url 'login' %}">Masuk</a><a class="btn btn-orange" href="{% url 'registrasi' %}">Daftar</a></div>
+        </nav>
+    </header>
+
+    <main id="konten">
+        <section class="landing-hero" id="beranda">
+            <div class="hero-glow hero-glow-orange"></div><div class="hero-glow hero-glow-blue"></div>
+            <div class="hero-inner">
+                <p class="eyebrow-pill"><span></span>Sistem Informasi Barang Hilang &amp; Temuan · Esa Unggul</p>
+                <h1>Barang hilang di kampus?<br><span>Sekarang ada catatannya.</span></h1>
+                <p class="hero-copy">Laporan kehilangan, pencocokan barang temuan, verifikasi klaim, hingga serah terima — semuanya tercatat digital. Menggantikan buku tulis dan grup WhatsApp.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-orange btn-large" href="{% url 'registrasi' %}">Daftar sebagai Mahasiswa <span aria-hidden="true">→</span></a>
+                    <a class="btn btn-outline btn-large" href="{% url 'login' %}">Masuk</a>
+                </div>
+                <p class="hero-login">Sudah punya akun? <a href="{% url 'login' %}">Masuk di sini</a>.</p>
+                <div class="hero-proof"><span class="avatar-stack"><i>M</i><i>H</i><i>UE</i></span><span>Digunakan oleh mahasiswa Esa Unggul</span></div>
+            </div>
+        </section>
+
+        <section class="student-section" id="untuk-mahasiswa">
+            <div class="landing-wrap student-grid">
+                <div>
+                    <p class="section-kicker">Untuk Mahasiswa</p>
+                    <h2>Satu tempat untuk lapor dan mengambil kembali</h2>
+                    <p class="section-intro">Tidak perlu lagi menunggu kabar dari grup. Semua status barang Anda dapat dipantau dari satu dasbor.</p>
+                    <ul class="feature-list">
+                        <li><span class="feature-icon">✎</span><div><strong>Lapor kehilangan secara terstruktur</strong><p>Isi nama, jenis, lokasi, tanggal, dan ciri-ciri. Foto opsional.</p></div></li>
+                        <li><span class="feature-icon">⌕</span><div><strong>Pantau status laporan</strong><p>Diajukan, menunggu, cocok, hingga selesai — transparan.</p></div></li>
+                        <li><span class="feature-icon">✓</span><div><strong>Klaim dengan bukti sesuai jenis barang</strong><p>Bukti sensitif hanya ditunjukkan langsung ke petugas, tidak disimpan sistem.</p></div></li>
+                    </ul>
+                </div>
+                <aside class="claim-card">
+                    <p class="section-kicker navy-kicker">Setelah Anda klaim</p>
+                    <ol class="claim-steps">
+                        <li><span>1</span><div><strong>Petugas memverifikasi bukti</strong><p>Sesuai jenis barang: identitas, ciri, atau detail lain.</p></div></li>
+                        <li><span>2</span><div><strong>Klaim diterima atau ditolak</strong><p>Jika ditolak, alasan dicatat dan Anda dapat mengajukan klaim ulang.</p></div></li>
+                        <li><span class="step-orange">3</span><div><strong>Serah terima dicatat</strong><p>Barang diserahkan, riwayat tersimpan bersama petugas dan waktu.</p></div></li>
+                    </ol>
+                    <a class="btn btn-navy btn-full" href="{% url 'registrasi' %}">Daftar sebagai Mahasiswa</a>
+                    <p class="card-login">Sudah punya akun? <a href="{% url 'login' %}">Masuk</a></p>
+                </aside>
+            </div>
+        </section>
+
+        <section class="workflow-section" id="cara-kerja">
+            <div class="landing-wrap">
+                <p class="section-kicker">Cara Kerja</p>
+                <h2>Empat langkah, satu catatan</h2>
+                <p class="section-intro">Keputusan akhir verifikasi dan penyerahan dilakukan oleh petugas pos keamanan.</p>
+                <ol class="workflow-grid">
+                    <li><span>1</span><h3>Lapor</h3><p>Mahasiswa mengisi laporan kehilangan: nama, jenis, lokasi, tanggal, dan ciri-ciri barang.</p></li>
+                    <li><span>2</span><h3>Dicocokkan</h3><p>Petugas mencari barang temuan dan mencocokkannya dengan laporan yang masuk.</p></li>
+                    <li><span>3</span><h3>Klaim &amp; Verifikasi</h3><p>Pemilik mengajukan klaim; petugas memverifikasi bukti sesuai jenis barang.</p></li>
+                    <li><span class="orange-step">4</span><h3>Serah Terima</h3><p>Barang diserahkan dan dicatat petugas beserta waktu sebagai jejak yang dapat dipertanggungjawabkan.</p></li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+            <div class="landing-wrap faq-wrap">
+                <div class="faq-heading"><p class="section-kicker">FAQ</p><h2>Pertanyaan yang sering diajukan</h2></div>
+                <details open><summary>Apakah kata sandi atau pola HP saya disimpan di sistem?<span>+</span></summary><p>Tidak. Bukti sensitif seperti kata sandi atau pola HP hanya ditunjukkan langsung kepada petugas dan tidak disimpan di sistem.</p></details>
+                <details><summary>Bagaimana jika klaim saya ditolak?<span>+</span></summary><p>Klaim akan ditolak dengan alasan yang dicatat. Anda tetap dapat mengajukan klaim ulang dengan bukti lain.</p></details>
+                <details><summary>Apakah saya mendapat notifikasi otomatis?<span>+</span></summary><p>Belum. Saat ini petugas akan menghubungi Anda melalui kontak yang tercantum pada laporan jika barang cocok.</p></details>
+                <details><summary>Berapa lama barang disimpan di pos?<span>+</span></summary><p>Masa simpan mengikuti kebijakan kampus. Status setiap barang tercatat di sistem sehingga dapat dipantau.</p></details>
+                <details><summary>Siapa yang memverifikasi klaim saya?<span>+</span></summary><p>Petugas pos keamanan. Keputusan akhir verifikasi dan penyerahan barang berada pada petugas, bukan sistem.</p></details>
+            </div>
+        </section>
+
+        <section class="closing-cta">
+            <div class="landing-wrap cta-inner"><div><h2>Siap mencatat barang Anda?</h2><p>Daftar sebagai mahasiswa untuk mulai melapor, atau masuk jika Anda sudah memiliki akun.</p></div><div class="cta-actions"><a class="btn btn-orange" href="{% url 'registrasi' %}">Daftar sebagai Mahasiswa</a><a class="btn btn-light-outline" href="{% url 'login' %}">Masuk</a></div></div>
+        </section>
+    </main>
+
+    <footer class="landing-footer">
+        <div class="landing-wrap footer-grid">
+            <div><a class="landing-brand footer-brand" href="{% url 'beranda' %}"><span class="brand-mark">UE</span><span><strong>LOST &amp; FOUND</strong><small>Universitas Esa Unggul</small></span></a><p>Sistem Informasi Pengelolaan Barang Hilang dan Temuan.</p></div>
+            <div><strong>Navigasi</strong><a href="#beranda">Beranda</a><a href="#cara-kerja">Cara Kerja</a><a href="#faq">FAQ</a><a href="{% url 'login' %}">Masuk</a><a href="{% url 'registrasi' %}">Daftar</a></div>
+            <div><strong>Kredit</strong><p>Kelompok 6 · Pengembangan Perangkat Lunak<br>Dosen: Qori Halimatul Hidayah, S.Pd., M.Kom.<br>Universitas Esa Unggul 2026</p></div>
+        </div>
+        <div class="landing-wrap footer-bottom">© 2026 Kelompok 6. Proyek akademik.</div>
+    </footer>
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
+            const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+            menuBtn.setAttribute('aria-expanded', String(!isOpen));
+            mobileMenu.hidden = isOpen;
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+            mobileMenu.hidden = true;
+            menuBtn.setAttribute('aria-expanded', 'false');
+        }));
+    </script>
+</body>
+</html>
