@@ -1,27 +1,126 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block judul %}Buat Laporan Kehilangan{% endblock %}
 
 {% block konten %}
 <a class="workspace-back" href="{% url 'dasbor_mahasiswa' %}">← Kembali ke dasbor</a>
-<div class="workspace-heading form-heading"><div><p class="workspace-kicker">LAPORAN BARU</p><h1>Laporkan barang hilang</h1><p class="workspace-lead">Isi detail barang sejelas mungkin agar Security dapat membantu mencarinya.</p></div><span class="form-step">01 <span>/</span> 01</span></div>
-<form class="workspace-panel report-form" method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
-    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
-    <div class="form-section-title"><span>01</span><div><h2>Informasi barang</h2><p>Mulai dengan nama dan jenis barang yang hilang.</p></div></div>
-    <div class="form-grid">
-        <div class="form-field"><label for="{{ form.nama_barang.id_for_label }}">{{ form.nama_barang.label }} <span aria-hidden="true">*</span></label>{{ form.nama_barang }}{% for error in form.nama_barang.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-        <div class="form-field"><label for="{{ form.jenis.id_for_label }}">{{ form.jenis.label }} <span aria-hidden="true">*</span></label>{{ form.jenis }}{% for error in form.jenis.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-        <div class="form-field form-field-wide"><label for="{{ form.deskripsi.id_for_label }}">{{ form.deskripsi.label }} <span aria-hidden="true">*</span></label>{{ form.deskripsi }}<small>Jelaskan keadaan atau kapan Anda menyadari barang hilang.</small>{% for error in form.deskripsi.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-    </div>
-    <div class="form-section-title form-section-next"><span>02</span><div><h2>Waktu dan lokasi</h2><p>Perkiraan lokasi dan tanggal terakhir barang terlihat.</p></div></div>
-    <div class="form-grid">
-        <div class="form-field"><label for="{{ form.lokasi.id_for_label }}">{{ form.lokasi.label }} <span aria-hidden="true">*</span></label>{{ form.lokasi }}{% for error in form.lokasi.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-        <div class="form-field"><label for="{{ form.tanggal_kehilangan.id_for_label }}">{{ form.tanggal_kehilangan.label }} <span aria-hidden="true">*</span></label>{{ form.tanggal_kehilangan }}{% for error in form.tanggal_kehilangan.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-        <div class="form-field form-field-wide"><label for="{{ form.ciri_ciri.id_for_label }}">{{ form.ciri_ciri.label }} <span aria-hidden="true">*</span></label>{{ form.ciri_ciri }}<small>Sebutkan warna, merek, goresan, isi, atau tanda khusus yang mudah dikenali.</small>{% for error in form.ciri_ciri.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-    </div>
-    <div class="form-section-title form-section-next"><span>03</span><div><h2>Foto pendukung <small>opsional</small></h2><p>Foto dapat membantu mengenali barang lebih cepat.</p></div></div>
-    <div class="form-field upload-field"><label for="{{ form.foto.id_for_label }}">Pilih foto barang</label>{{ form.foto }}<small>JPG, PNG, atau WebP · Maksimal 5 MB</small>{% for error in form.foto.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
-    <div class="form-footer"><p><span aria-hidden="true">ℹ</span> Laporan ini hanya dapat dilihat oleh Anda dan petugas Security.</p><button class="workspace-button" type="submit">Kirim laporan <span aria-hidden="true">→</span></button></div>
-</form>
+<div class="workspace-heading form-heading report-wizard-heading">
+    <div><p class="workspace-kicker">LAPORAN BARU</p><h1>Laporkan barang hilang</h1><p class="workspace-lead">Tenang, kami bantu cari. Ceritakan hal pentingnya saja.</p></div>
+</div>
+
+<div class="draft-banner" id="draft-banner" hidden role="status" aria-live="polite">
+    <div><strong>Ada laporan Anda yang belum selesai.</strong><span>Anda bisa melanjutkan dari bagian terakhir.</span></div>
+    <div class="draft-actions"><button type="button" class="draft-continue" id="draft-continue">Lanjutkan</button><button type="button" class="draft-discard" id="draft-discard">Mulai baru</button></div>
+</div>
+<div class="session-banner" id="session-banner" hidden role="alert" aria-live="assertive" tabindex="-1">
+    <strong>Sesi Anda sudah berakhir.</strong> Draft tetap tersimpan di perangkat ini. <a href="{% url 'login' %}?next={% url 'buat_laporan' %}" target="_blank" rel="noopener">Masuk kembali di tab baru</a>, lalu lanjutkan mengirim laporan.
+</div>
+
+<div class="wizard-progress" id="wizard-progress" role="progressbar" aria-label="Kemajuan laporan" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" hidden>
+    <div class="wizard-progress-track"><span class="wizard-progress-fill" id="wizard-progress-fill"></span></div>
+    <div class="wizard-step-indicators" aria-label="Langkah pengisian"><span data-step-indicator="0" aria-current="step">Barang</span><span data-step-indicator="1">Lokasi</span><span data-step-indicator="2">Ciri &amp; foto</span><span data-step-indicator="3">Tinjau</span></div>
+    <div class="wizard-progress-meta"><span id="wizard-progress-label">Langkah 1 dari 4</span><span id="wizard-step-name">Apa yang hilang?</span></div>
+</div>
+
+<div class="wizard-layout">
+  <div class="wizard-form-column">
+    <form class="workspace-panel report-form report-wizard" id="report-form" method="post" enctype="multipart/form-data" novalidate data-today="{{ tanggal_hari_ini }}" data-draft-key="lost-report-draft-{{ user.pk }}" data-server-errors="{% if form.errors %}true{% else %}false{% endif %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+
+        <section class="wizard-step" data-wizard-step="0" aria-labelledby="step-title-0">
+            <div class="form-section-title wizard-step-title"><span>01</span><div><h2 id="step-title-0">Apa yang hilang?</h2><p>Pilih jenisnya, lalu tulis nama barang.</p></div></div>
+            <div class="form-grid wizard-grid">
+                <div class="form-field form-field-wide" data-field="jenis">
+                    <label id="jenis-label" for="{{ form.jenis.id_for_label }}">{{ form.jenis.label }} <span aria-hidden="true">*</span></label>
+                    <div class="category-choices wizard-only" id="category-choices" role="group" aria-labelledby="jenis-label"></div>
+                    <div class="native-category">{{ form.jenis }}</div>
+                    <p class="field-error" id="error-jenis" data-error-for="jenis" aria-live="polite">{% for error in form.jenis.errors %}{{ error }}{% endfor %}</p>
+                </div>
+                <div class="form-field form-field-wide" data-field="nama_barang">
+                    <label for="{{ form.nama_barang.id_for_label }}">Nama barang <span aria-hidden="true">*</span></label>{{ form.nama_barang }}
+                    <p class="field-error" id="error-nama_barang" data-error-for="nama_barang" aria-live="polite">{% for error in form.nama_barang.errors %}{{ error }}{% endfor %}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="wizard-step" data-wizard-step="1" aria-labelledby="step-title-1">
+            <div class="form-section-title wizard-step-title"><span>02</span><div><h2 id="step-title-1">Terakhir Anda lihat di mana, dan kapan?</h2><p>Perkiraan tempat dan tanggal sudah sangat membantu.</p></div></div>
+            <div class="form-grid wizard-grid">
+                <div class="form-field form-field-wide" data-field="lokasi">
+                    <label for="{{ form.lokasi.id_for_label }}">Lokasi kehilangan <span aria-hidden="true">*</span></label>
+                    <div class="location-choices wizard-only" id="location-choices" role="group" aria-label="Lokasi umum di kampus"></div>
+                    {{ form.lokasi }}
+                    <small>Pilih saran atau ketik lokasi lain di kampus.</small>
+                    <p class="field-error" id="error-lokasi" data-error-for="lokasi" aria-live="polite">{% for error in form.lokasi.errors %}{{ error }}{% endfor %}</p>
+                </div>
+                <div class="form-field form-field-wide" data-field="tanggal_kehilangan">
+                    <label for="{{ form.tanggal_kehilangan.id_for_label }}">Tanggal kehilangan <span aria-hidden="true">*</span></label>
+                    <div class="date-shortcuts wizard-only" id="date-shortcuts" role="group" aria-label="Pilihan tanggal cepat"></div>
+                    {{ form.tanggal_kehilangan }}
+                    <p class="field-error" id="error-tanggal_kehilangan" data-error-for="tanggal_kehilangan" aria-live="polite">{% for error in form.tanggal_kehilangan.errors %}{{ error }}{% endfor %}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="wizard-step" data-wizard-step="2" aria-labelledby="step-title-2">
+            <div class="form-section-title wizard-step-title"><span>03</span><div><h2 id="step-title-2">Ciri-ciri barang</h2><p>Apa yang membuat barang ini mudah dikenali?</p></div></div>
+            <div class="form-grid wizard-grid">
+                <div class="form-field form-field-wide" data-field="ciri_ciri">
+                    <label for="{{ form.ciri_ciri.id_for_label }}">Ciri-ciri barang <span aria-hidden="true">*</span></label>
+                    {{ form.ciri_ciri }}
+                    <small class="privacy-hint">Jangan tulis nomor kartu, password, atau pola HP.</small>
+                    <p class="field-error" id="error-ciri_ciri" data-error-for="ciri_ciri" aria-live="polite">{% for error in form.ciri_ciri.errors %}{{ error }}{% endfor %}</p>
+                </div>
+                <div class="form-field form-field-wide" data-field="deskripsi">
+                    <label for="{{ form.deskripsi.id_for_label }}">Cerita kejadian <span aria-hidden="true">*</span></label>{{ form.deskripsi }}
+                    <small>Ceritakan singkat kapan dan bagaimana barang hilang.</small>
+                    <p class="field-error" id="error-deskripsi" data-error-for="deskripsi" aria-live="polite">{% for error in form.deskripsi.errors %}{{ error }}{% endfor %}</p>
+                </div>
+                <div class="form-field form-field-wide" data-field="foto">
+                    <label>Foto barang <span class="optional-label">Opsional</span></label>
+                    <div class="upload-zone wizard-only" id="upload-zone" tabindex="0" role="group" aria-label="Tambah foto barang">
+                        <span class="camera-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+                        <strong>Ambil foto atau pilih dari galeri</strong><small>JPG, PNG, atau WebP · Maks. 5 MB</small>
+                        <div class="upload-actions"><button type="button" class="upload-choice" data-camera>Ambil foto</button><button type="button" class="upload-choice" data-gallery>Pilih dari galeri</button></div>
+                        <div class="upload-preview" id="upload-preview" hidden><img id="upload-thumbnail" alt="Pratinjau foto barang"><span id="upload-filename"></span><button type="button" id="remove-photo" aria-label="Hapus foto">Hapus</button></div>
+                    </div>
+                    <div class="native-upload">{{ form.foto }}<small>JPG, PNG, atau WebP · Maksimal 5 MB</small></div>
+                    <p class="field-error" id="error-foto" data-error-for="foto" aria-live="polite">{% for error in form.foto.errors %}{{ error }}{% endfor %}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="wizard-step wizard-only" data-wizard-step="3" aria-labelledby="step-title-3">
+            <div class="form-section-title wizard-step-title"><span>04</span><div><h2 id="step-title-3">Cek sebentar, lalu kirim.</h2><p>Pastikan informasi utama sudah benar.</p></div></div>
+            <div class="review-card" id="review-card">
+                <div class="review-topline"><span class="review-kicker">RINGKASAN LAPORAN</span><span class="status status-diajukan">Diajukan</span></div>
+                <div class="review-item"><div class="review-image" id="review-image" aria-hidden="true">UE</div><div><span class="review-label">BARANG</span><strong id="review-name">Belum diisi</strong><small id="review-type">Pilih jenis barang</small></div><button type="button" class="review-edit" data-edit-step="0">Ubah</button></div>
+                <div class="review-row"><div><span class="review-label">LOKASI &amp; TANGGAL</span><p id="review-location">Belum diisi</p><small id="review-date">Belum diisi</small></div><button type="button" class="review-edit" data-edit-step="1">Ubah</button></div>
+                <div class="review-row"><div><span class="review-label">CIRI-CIRI BARANG</span><p id="review-traits">Belum diisi</p></div><button type="button" class="review-edit" data-edit-step="2">Ubah</button></div>
+                <div class="review-row"><div><span class="review-label">CERITA SINGKAT</span><p id="review-description">Belum diisi</p></div></div>
+            </div>
+            <p class="review-privacy">Laporan ini hanya dapat dilihat oleh Anda dan petugas Security. Pencocokan barang dilakukan manual oleh Security.</p>
+        </section>
+
+        <div class="no-js-form-footer"><p>Laporan Anda hanya dapat dilihat oleh Anda dan petugas Security.</p><button type="submit" class="workspace-button">Kirim laporan <span aria-hidden="true">→</span></button></div>
+        <div class="wizard-controls wizard-only" id="wizard-controls">
+            <button type="button" class="wizard-back" id="wizard-back">Kembali</button>
+            <button type="button" class="workspace-button wizard-next" id="wizard-next">Lanjut <span aria-hidden="true">→</span></button>
+            <button type="submit" class="workspace-button wizard-submit" id="wizard-submit" hidden><span class="submit-label">Kirim laporan</span><span class="submit-spinner" aria-hidden="true"></span></button>
+        </div>
+    </form>
+  </div>
+
+  <aside class="workspace-panel live-preview" id="live-preview" aria-label="Pratinjau kartu laporan">
+    <div class="preview-heading"><div><p class="workspace-kicker">PRATINJAU</p><h2>Kartu laporan</h2></div><span class="preview-dot" aria-hidden="true"></span></div>
+    <div class="preview-item"><div class="preview-photo" id="preview-image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14v13H5zM9 7l1-2h4l1 2"/><circle cx="12" cy="13" r="3"/></svg></div><div><span class="preview-type" id="preview-type">Jenis barang</span><h3 id="preview-name">Nama barang</h3></div></div>
+    <div class="preview-divider"></div>
+    <dl class="preview-data"><div><dt>LOKASI</dt><dd id="preview-location">Belum diisi</dd></div><div><dt>TANGGAL</dt><dd id="preview-date">Belum diisi</dd></div><div><dt>CIRI-CIRI BARANG</dt><dd id="preview-traits">Belum diisi</dd></div></dl>
+    <div class="preview-status"><span class="status status-diajukan">Diajukan</span><small>Ditinjau oleh Security</small></div>
+    <p class="preview-note">Informasi ini akan membantu Security meninjau laporan Anda.</p>
+  </aside>
+</div>
+<script src="{% static 'js/laporan-wizard.js' %}" defer></script>
 {% endblock %}

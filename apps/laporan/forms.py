@@ -18,11 +18,11 @@ class LaporanKehilanganForm(forms.ModelForm):
         )
         widgets = {
             "nama_barang": forms.TextInput(attrs={"placeholder": "Contoh: Tumbler hitam"}),
-            "deskripsi": forms.Textarea(attrs={"rows": 3, "placeholder": "Ceritakan kronologi singkat kehilangan."}),
+            "deskripsi": forms.Textarea(attrs={"rows": 3, "placeholder": "Ceritakan singkat kronologi kehilangan."}),
             "lokasi": forms.TextInput(attrs={"placeholder": "Contoh: Perpustakaan lantai 2"}),
             "tanggal_kehilangan": forms.DateInput(attrs={"type": "date"}),
-            "ciri_ciri": forms.Textarea(attrs={"rows": 3, "placeholder": "Warna, merek, isi, atau tanda khusus."}),
-            "foto": forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
+            "ciri_ciri": forms.Textarea(attrs={"rows": 3, "placeholder": "Warna, merek, atau tanda khusus."}),
+            "foto": forms.ClearableFileInput(attrs={"accept": "image/*"}),
         }
 
     def clean_tanggal_kehilangan(self):

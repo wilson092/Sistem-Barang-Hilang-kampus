@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block judul %}Laporan Berhasil Dikirim{% endblock %}
+
+{% block konten %}
+<section class="success-page" data-draft-key="lost-report-draft-{{ user.pk }}">
+    <span class="success-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span>
+    <p class="workspace-kicker">LAPORAN TERKIRIM</p>
+    <h1>Laporan Anda sudah diterima.</h1>
+    <p class="success-copy">Security akan meninjau laporan Anda. Status bisa dipantau dari dasbor mahasiswa.</p>
+    <div class="success-summary"><div><span class="review-label">NOMOR LAPORAN</span><strong>#{{ laporan.pk }}</strong></div><span class="status status-diajukan">{{ laporan.get_status_display }}</span></div>
+    <div class="success-actions"><a class="workspace-button" href="{% url 'dasbor_mahasiswa' %}">Lihat laporan saya <span aria-hidden="true">→</span></a><a class="success-secondary" href="{% url 'daftar_barang_mahasiswa' %}">Lihat daftar barang temuan</a></div>
+</section>
+<script src="{% static 'js/laporan-wizard.js' %}" defer></script>
+{% endblock %}
