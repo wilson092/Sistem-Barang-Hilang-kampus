@@ -11,6 +11,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_POST
 
+from apps.laporan.models import LaporanKehilangan
+
 from .decorators import peran_wajib
 from .forms import LoginForm, LupaPasswordForm, RegistrasiForm
 from .models import MAKS_GAGAL_LOGIN, Pengguna
@@ -101,12 +103,14 @@ def dasbor(request):
 
 @peran_wajib(Pengguna.Peran.MAHASISWA)
 def dasbor_mahasiswa(request):
-    return render(request, "mahasiswa/dasbor.html")
+    laporan = LaporanKehilangan.objects.filter(pelapor=request.user)
+    return render(request, "mahasiswa/dasbor.html", {"laporan": laporan})
 
 
 @peran_wajib(Pengguna.Peran.SECURITY)
 def dasbor_security(request):
-    return render(request, "security/dasbor.html")
+    laporan = LaporanKehilangan.objects.select_related("pelapor").all()[:5]
+    return render(request, "security/dasbor.html", {"laporan": laporan})
 
 
 def lupa_password(request):

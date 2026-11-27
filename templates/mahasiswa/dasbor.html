@@ -3,13 +3,27 @@
 {% block judul %}Dasbor Mahasiswa{% endblock %}
 
 {% block konten %}
-<h1>Halo {{ user.nim }} {{ user.username }}</h1>
-<p class="muted">Dasbor Mahasiswa. Menu di bawah akan aktif pada iterasi berikutnya.</p>
-
-<div class="grid">
-    <div class="tile tile-nonaktif"><h2>Buat Laporan Kehilangan</h2><p>Iterasi 2</p></div>
-    <div class="tile tile-nonaktif"><h2>Laporan Saya</h2><p>Iterasi 2</p></div>
-    <div class="tile tile-nonaktif"><h2>Daftar Barang Temuan</h2><p>Iterasi 3</p></div>
-    <div class="tile tile-nonaktif"><h2>Ajukan Klaim</h2><p>Iterasi 5</p></div>
+<div class="workspace-heading">
+    <div><p class="workspace-kicker">RUANG MAHASISWA</p><h1>Halo, {{ user.nama }}</h1><p class="workspace-lead">Pantau laporan kehilangan Anda dan kabar terbaru dari Security.</p></div>
+    <a class="workspace-button" href="{% url 'buat_laporan' %}"><span aria-hidden="true">＋</span> Buat laporan</a>
+</div>
+<section class="workspace-panel" aria-labelledby="laporan-heading">
+    <div class="panel-heading"><div><p class="workspace-kicker">AKTIVITAS ANDA</p><h2 id="laporan-heading">Laporan kehilangan</h2></div><span class="count-pill">{{ laporan|length }} laporan</span></div>
+    {% if laporan %}
+        <div class="report-list">
+        {% for item in laporan %}
+            <article class="report-row">
+                <div class="report-icon" aria-hidden="true">{{ item.nama_barang|slice:":1"|upper }}</div>
+                <div class="report-main"><div class="report-title-line"><h3>{{ item.nama_barang }}</h3><span class="status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span aria-hidden="true">·</span> {{ item.lokasi }}</p><small>{{ item.tanggal_kehilangan|date:"j F Y" }}{% if item.foto %} <span aria-hidden="true">·</span> Foto terlampir{% endif %}</small></div>
+            </article>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Belum ada laporan</h3><p>Catat barang yang hilang agar tim Security dapat membantu mencarinya.</p><a class="workspace-button" href="{% url 'buat_laporan' %}">Buat laporan pertama</a></div>
+    {% endif %}
+</section>
+<div class="grid workspace-tiles">
+    <div class="tile tile-nonaktif"><h2>Daftar Barang Temuan</h2><p>Akan tersedia pada Iterasi 3</p></div>
+    <div class="tile tile-nonaktif"><h2>Ajukan Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
 </div>
 {% endblock %}

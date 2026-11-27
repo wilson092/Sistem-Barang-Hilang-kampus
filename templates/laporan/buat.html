@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block judul %}Buat Laporan Kehilangan{% endblock %}
+
+{% block konten %}
+<a class="workspace-back" href="{% url 'dasbor_mahasiswa' %}">← Kembali ke dasbor</a>
+<div class="workspace-heading form-heading"><div><p class="workspace-kicker">LAPORAN BARU</p><h1>Laporkan barang hilang</h1><p class="workspace-lead">Isi detail barang sejelas mungkin agar Security dapat membantu mencarinya.</p></div><span class="form-step">01 <span>/</span> 01</span></div>
+<form class="workspace-panel report-form" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-section-title"><span>01</span><div><h2>Informasi barang</h2><p>Mulai dengan nama dan jenis barang yang hilang.</p></div></div>
+    <div class="form-grid">
+        <div class="form-field"><label for="{{ form.nama_barang.id_for_label }}">{{ form.nama_barang.label }} <span aria-hidden="true">*</span></label>{{ form.nama_barang }}{% for error in form.nama_barang.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.jenis.id_for_label }}">{{ form.jenis.label }} <span aria-hidden="true">*</span></label>{{ form.jenis }}{% for error in form.jenis.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field form-field-wide"><label for="{{ form.deskripsi.id_for_label }}">{{ form.deskripsi.label }} <span aria-hidden="true">*</span></label>{{ form.deskripsi }}<small>Jelaskan keadaan atau kapan Anda menyadari barang hilang.</small>{% for error in form.deskripsi.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="form-section-title form-section-next"><span>02</span><div><h2>Waktu dan lokasi</h2><p>Perkiraan lokasi dan tanggal terakhir barang terlihat.</p></div></div>
+    <div class="form-grid">
+        <div class="form-field"><label for="{{ form.lokasi.id_for_label }}">{{ form.lokasi.label }} <span aria-hidden="true">*</span></label>{{ form.lokasi }}{% for error in form.lokasi.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.tanggal_kehilangan.id_for_label }}">{{ form.tanggal_kehilangan.label }} <span aria-hidden="true">*</span></label>{{ form.tanggal_kehilangan }}{% for error in form.tanggal_kehilangan.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field form-field-wide"><label for="{{ form.ciri_ciri.id_for_label }}">{{ form.ciri_ciri.label }} <span aria-hidden="true">*</span></label>{{ form.ciri_ciri }}<small>Sebutkan warna, merek, goresan, isi, atau tanda khusus yang mudah dikenali.</small>{% for error in form.ciri_ciri.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="form-section-title form-section-next"><span>03</span><div><h2>Foto pendukung <small>opsional</small></h2><p>Foto dapat membantu mengenali barang lebih cepat.</p></div></div>
+    <div class="form-field upload-field"><label for="{{ form.foto.id_for_label }}">Pilih foto barang</label>{{ form.foto }}<small>JPG, PNG, atau WebP · Maksimal 5 MB</small>{% for error in form.foto.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    <div class="form-footer"><p><span aria-hidden="true">ℹ</span> Laporan ini hanya dapat dilihat oleh Anda dan petugas Security.</p><button class="workspace-button" type="submit">Kirim laporan <span aria-hidden="true">→</span></button></div>
+</form>
+{% endblock %}

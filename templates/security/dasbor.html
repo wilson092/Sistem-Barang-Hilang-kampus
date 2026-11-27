@@ -3,16 +3,22 @@
 {% block judul %}Dasbor Security{% endblock %}
 
 {% block konten %}
-<h1>Halo {{ user.nim }} {{ user.username }}</h1>
-<p class="muted">Dasbor Security. Menu di bawah akan aktif pada iterasi berikutnya.</p>
-
-<div class="grid">
-    <div class="tile tile-nonaktif"><h2>Daftar Laporan</h2><p>Iterasi 2</p></div>
-    <div class="tile tile-nonaktif"><h2>Catat Barang Temuan</h2><p>Iterasi 3</p></div>
-    <div class="tile tile-nonaktif"><h2>Daftar dan Ubah Barang Temuan</h2><p>Iterasi 3</p></div>
-    <div class="tile tile-nonaktif"><h2>Cari dan Cocokkan</h2><p>Iterasi 4</p></div>
-    <div class="tile tile-nonaktif"><h2>Daftar Klaim</h2><p>Iterasi 5</p></div>
-    <div class="tile tile-nonaktif"><h2>Pengembalian dan Serah Terima</h2><p>Iterasi 5</p></div>
-    <div class="tile tile-nonaktif"><h2>Riwayat Verifikasi dan Pengembalian</h2><p>Iterasi 5</p></div>
+<div class="workspace-heading">
+    <div><p class="workspace-kicker">RUANG SECURITY</p><h1>Selamat bertugas, {{ user.nama }}</h1><p class="workspace-lead">Laporan kehilangan yang masuk ditampilkan di sini untuk ditinjau.</p></div>
+    <a class="workspace-button" href="{% url 'daftar_laporan_security' %}">Lihat semua laporan <span aria-hidden="true">→</span></a>
+</div>
+<section class="workspace-panel" aria-labelledby="masuk-heading">
+    <div class="panel-heading"><div><p class="workspace-kicker">TERBARU</p><h2 id="masuk-heading">Laporan masuk</h2></div><span class="count-pill">{{ laporan|length }} terbaru</span></div>
+    {% if laporan %}<div class="report-list">
+        {% for item in laporan %}<article class="report-row">
+            <div class="report-icon" aria-hidden="true">{{ item.nama_barang|slice:":1"|upper }}</div>
+            <div class="report-main"><div class="report-title-line"><h3>{{ item.nama_barang }}</h3><span class="status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span aria-hidden="true">·</span> {{ item.lokasi }}</p><small>{{ item.pelapor.nama }} ({{ item.pelapor.nim }}) <span aria-hidden="true">·</span> {{ item.tanggal_kehilangan|date:"j F Y" }}</small></div>
+        </article>{% endfor %}
+    </div>{% else %}<div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Belum ada laporan masuk</h3><p>Laporan baru dari mahasiswa akan muncul di sini.</p></div>{% endif %}
+</section>
+<div class="grid workspace-tiles">
+    <div class="tile tile-nonaktif"><h2>Catat Barang Temuan</h2><p>Akan tersedia pada Iterasi 3</p></div>
+    <div class="tile tile-nonaktif"><h2>Cari dan Cocokkan</h2><p>Akan tersedia pada Iterasi 4</p></div>
+    <div class="tile tile-nonaktif"><h2>Kelola Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
 </div>
 {% endblock %}

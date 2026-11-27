@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block judul %}Daftar Laporan Masuk{% endblock %}
+
+{% block konten %}
+<a class="workspace-back" href="{% url 'dasbor_security' %}">← Kembali ke dasbor</a>
+<div class="workspace-heading"><div><p class="workspace-kicker">PENGELOLAAN LAPORAN</p><h1>Laporan kehilangan masuk</h1><p class="workspace-lead">Daftar laporan dari mahasiswa untuk ditinjau oleh tim Security.</p></div><span class="count-pill count-large">{{ laporan|length }} laporan</span></div>
+<section class="security-report-list">
+    {% if laporan %}{% for item in laporan %}
+    <article class="workspace-panel security-report">
+        <div class="report-row security-report-heading"><div class="report-icon" aria-hidden="true">{{ item.nama_barang|slice:":1"|upper }}</div><div class="report-main"><div class="report-title-line"><h2>{{ item.nama_barang }}</h2><span class="status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span aria-hidden="true">·</span> Dilaporkan {{ item.dibuat_pada|date:"j F Y, H:i" }}</p></div></div>
+        <div class="security-details"><div><span class="detail-label">PELAPOR</span><p>{{ item.pelapor.nama }} <small>· {{ item.pelapor.nim }}</small></p></div><div><span class="detail-label">LOKASI KEHILANGAN</span><p>{{ item.lokasi }}</p></div><div><span class="detail-label">TANGGAL KEHILANGAN</span><p>{{ item.tanggal_kehilangan|date:"j F Y" }}</p></div><div class="detail-wide"><span class="detail-label">DESKRIPSI</span><p>{{ item.deskripsi }}</p></div><div class="detail-wide"><span class="detail-label">CIRI-CIRI BARANG</span><p>{{ item.ciri_ciri }}</p></div></div>
+        {% if item.foto %}<a class="photo-link" href="{% url 'foto_laporan' item.pk %}" target="_blank" rel="noopener">Lihat foto terlampir <span aria-hidden="true">↗</span></a>{% endif %}
+    </article>
+    {% endfor %}{% else %}<div class="workspace-panel empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h2>Belum ada laporan masuk</h2><p>Laporan yang dikirim mahasiswa akan muncul di halaman ini.</p></div>{% endif %}
+</section>
+{% endblock %}
