@@ -9,6 +9,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.laporan.models import LaporanKehilangan
@@ -105,14 +106,31 @@ def dasbor(request):
 @peran_wajib(Pengguna.Peran.MAHASISWA)
 def dasbor_mahasiswa(request):
     laporan = LaporanKehilangan.objects.filter(pelapor=request.user)
-    return render(request, "mahasiswa/dasbor.html", {"laporan": laporan})
+    laporan_aktif = laporan.exclude(status=LaporanKehilangan.Status.SELESAI).count()
+    return render(request, "mahasiswa/dasbor.html", {"laporan": laporan, "laporan_aktif": laporan_aktif})
 
 
 @peran_wajib(Pengguna.Peran.SECURITY)
 def dasbor_security(request):
     laporan = LaporanKehilangan.objects.select_related("pelapor").all()[:5]
     barang_temuan = BarangTemuan.objects.all()[:5]
-    return render(request, "security/dasbor.html", {"laporan": laporan, "barang_temuan": barang_temuan})
+    hari_ini = timezone.localdate()
+    awal_bulan = hari_ini.replace(day=1)
+    konteks = {
+        "laporan": laporan,
+        "barang_temuan": barang_temuan,
+        "laporan_total": LaporanKehilangan.objects.count(),
+        "laporan_baru": LaporanKehilangan.objects.filter(status=LaporanKehilangan.Status.DIAJUKAN).count(),
+        "laporan_cocok": LaporanKehilangan.objects.filter(status=LaporanKehilangan.Status.COCOK).count(),
+        "barang_total": BarangTemuan.objects.count(),
+        "barang_tersimpan": BarangTemuan.objects.filter(status=BarangTemuan.Status.TERSIMPAN).count(),
+        "barang_diserahkan_bulan_ini": BarangTemuan.objects.filter(
+            status=BarangTemuan.Status.DISERAHKAN,
+            diperbarui_pada__date__gte=awal_bulan,
+            diperbarui_pada__date__lte=hari_ini,
+        ).count(),
+    }
+    return render(request, "security/dasbor.html", konteks)
 
 
 def lupa_password(request):

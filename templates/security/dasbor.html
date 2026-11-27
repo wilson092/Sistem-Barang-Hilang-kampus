@@ -1,25 +1,58 @@
 {% extends "base.html" %}
 
 {% block judul %}Dasbor Security{% endblock %}
+{% block kelas_body %}workspace-body security-dashboard-body{% endblock %}
 
 {% block konten %}
-<div class="workspace-heading">
-    <div><p class="workspace-kicker">RUANG SECURITY</p><h1>Selamat bertugas, {{ user.nama }}</h1><p class="workspace-lead">Laporan kehilangan yang masuk ditampilkan di sini untuk ditinjau.</p></div>
-    <a class="workspace-button" href="{% url 'daftar_laporan_security' %}">Lihat semua laporan <span aria-hidden="true">→</span></a>
-</div>
-<section class="workspace-panel" aria-labelledby="masuk-heading">
-    <div class="panel-heading"><div><p class="workspace-kicker">TERBARU</p><h2 id="masuk-heading">Laporan masuk</h2></div><span class="count-pill">{{ laporan|length }} terbaru</span></div>
-    {% if laporan %}<div class="report-list">
-        {% for item in laporan %}<article class="report-row">
-            <div class="report-icon" aria-hidden="true">{{ item.nama_barang|slice:":1"|upper }}</div>
-            <div class="report-main"><div class="report-title-line"><h3>{{ item.nama_barang }}</h3><span class="status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span aria-hidden="true">·</span> {{ item.lokasi }}</p><small>{{ item.pelapor.nama }} ({{ item.pelapor.nim }}) <span aria-hidden="true">·</span> {{ item.tanggal_kehilangan|date:"j F Y" }}</small></div>
-        </article>{% endfor %}
-    </div>{% else %}<div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Belum ada laporan masuk</h3><p>Laporan baru dari mahasiswa akan muncul di sini.</p></div>{% endif %}
-</section>
-<div class="grid workspace-tiles">
-    <a class="tile workspace-tile-link" href="{% url 'catat_barang' %}"><h2>Catat Barang Temuan</h2><p>Tambahkan barang yang ditemukan ke daftar <span aria-hidden="true">→</span></p></a>
-    <a class="tile workspace-tile-link" href="{% url 'daftar_barang_security' %}"><h2>Kelola Barang Temuan</h2><p>Lihat, ubah data, dan perbarui status <span aria-hidden="true">→</span></p></a>
-    <div class="tile tile-nonaktif"><h2>Cari dan Cocokkan</h2><p>Akan tersedia pada Iterasi 4</p></div>
-    <div class="tile tile-nonaktif"><h2>Kelola Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
+<div class="security-dashboard-shell">
+    <aside class="security-side-nav" aria-label="Menu Security">
+        <p class="security-side-label">MENU UTAMA</p>
+        <a class="security-side-link is-current" href="{% url 'dasbor_security' %}" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dasbor</a>
+        <a class="security-side-link" href="{% url 'daftar_laporan_security' %}"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg>Laporan kehilangan<span>{{ laporan_total }}</span></a>
+        <a class="security-side-link" href="{% url 'daftar_barang_security' %}"><svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Barang temuan<span>{{ barang_total }}</span></a>
+        <div class="security-side-divider"></div>
+        <p class="security-side-label">AKSI CEPAT</p>
+        <a class="security-side-link" href="{% url 'catat_barang' %}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Catat barang temuan</a>
+    </aside>
+
+    <div class="security-dashboard-main">
+        <div class="security-dashboard-heading">
+            <div><p class="dashboard-eyebrow">OPERASIONAL · POS KAMPUS</p><h1>Ringkasan barang temuan</h1><p class="dashboard-subtitle">Pantau barang masuk dan tindak lanjut laporan mahasiswa.</p></div>
+            <a class="dashboard-primary" href="{% url 'catat_barang' %}"><span aria-hidden="true">＋</span> Catat barang temuan</a>
+        </div>
+
+        <section class="security-metrics" aria-label="Ringkasan status">
+            <article class="security-metric"><div class="security-metric-label">Tersimpan<span class="security-metric-icon"><svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></span></div><strong>{{ barang_tersimpan }}</strong><small>Barang di pos Security</small></article>
+            <article class="security-metric"><div class="security-metric-label">Laporan baru<span class="security-metric-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v17H5zM8 8h8M8 12h8M8 16h5"/></svg></span></div><strong>{{ laporan_baru }}</strong><small>Menunggu peninjauan</small></article>
+            <article class="security-metric"><div class="security-metric-label">Status cocok<span class="security-metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span></div><strong>{{ laporan_cocok }}</strong><small>Laporan ditandai cocok</small></article>
+            <article class="security-metric"><div class="security-metric-label">Diserahkan bulan ini<span class="security-metric-icon"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span></div><strong>{{ barang_diserahkan_bulan_ini }}</strong><small>Barang ditindaklanjuti</small></article>
+        </section>
+
+        <section class="dashboard-panel security-items-panel" aria-labelledby="temuan-heading">
+            <div class="dashboard-panel-head"><div><h2 id="temuan-heading">Barang temuan terbaru</h2><p>Data operasional yang dicatat oleh Security.</p></div><a class="dashboard-text-link" href="{% url 'daftar_barang_security' %}">Lihat semua <span aria-hidden="true">→</span></a></div>
+            {% if barang_temuan %}
+            <div class="security-table-wrap"><table class="security-dashboard-table"><thead><tr><th>Barang</th><th>Ditemukan</th><th>Penemu</th><th>Disimpan di</th><th>Status</th><th><span class="visually-hidden">Aksi</span></th></tr></thead><tbody>
+                {% for barang in barang_temuan %}<tr>
+                    <td><div class="security-table-item"><span class="security-table-icon" aria-hidden="true">{{ barang.nama_barang|slice:":1"|upper }}</span><span>{{ barang.nama_barang }}<small>{{ barang.get_jenis_display }}</small></span></div></td>
+                    <td>{{ barang.tanggal_ditemukan|date:"j M Y" }}</td>
+                    <td>{{ barang.nama_penemu }}</td>
+                    <td>{{ barang.lokasi_penyimpanan }}</td>
+                    <td><span class="dashboard-status status-{{ barang.status }}">{{ barang.get_status_display }}</span></td>
+                    <td><a class="security-table-action" href="{% url 'ubah_barang' barang.pk %}">Ubah</a></td>
+                </tr>{% endfor %}
+            </tbody></table></div>
+            {% else %}<div class="dashboard-empty security-empty"><span class="dashboard-empty-mark" aria-hidden="true">⌕</span><h3>Belum ada barang temuan</h3><p>Barang yang dicatat akan tampil di daftar operasional ini.</p><a class="dashboard-primary" href="{% url 'catat_barang' %}">Catat barang temuan</a></div>{% endif %}
+            <div class="dashboard-panel-foot"><span>Menampilkan {{ barang_temuan|length }} dari {{ barang_total }} barang temuan</span><a class="dashboard-text-link" href="{% url 'daftar_barang_security' %}">Buka daftar barang <span aria-hidden="true">→</span></a></div>
+        </section>
+
+        <div class="security-dashboard-bottom">
+            <section class="dashboard-panel">
+                <div class="dashboard-panel-head"><div><h2>Laporan kehilangan terbaru</h2><p>Masuk dari mahasiswa.</p></div><a class="dashboard-text-link" href="{% url 'daftar_laporan_security' %}">Semua <span aria-hidden="true">→</span></a></div>
+                {% if laporan %}<div class="security-recent-list">{% for item in laporan %}<div class="security-recent-row"><div><strong>{{ item.nama_barang }}</strong><small>{{ item.lokasi }} · {{ item.tanggal_kehilangan|date:"j M Y" }}</small></div><span class="dashboard-status status-{{ item.status }}">{{ item.get_status_display }}</span></div>{% endfor %}</div>
+                {% else %}<div class="security-recent-empty">Belum ada laporan masuk.</div>{% endif %}
+            </section>
+            <section class="security-operation-note"><p class="dashboard-eyebrow">TINDAK LANJUT</p><h2>Lokasi simpan selalu terbaru</h2><p>Perbarui status dan lokasi penyimpanan dari daftar barang temuan agar tim tetap mendapat informasi yang akurat.</p><a href="{% url 'daftar_barang_security' %}">Kelola barang temuan <span aria-hidden="true">→</span></a></section>
+        </div>
+    </div>
 </div>
 {% endblock %}

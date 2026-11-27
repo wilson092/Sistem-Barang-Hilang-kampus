@@ -1,29 +1,54 @@
 {% extends "base.html" %}
 
 {% block judul %}Dasbor Mahasiswa{% endblock %}
+{% block kelas_body %}workspace-body dashboard-body{% endblock %}
 
 {% block konten %}
-<div class="workspace-heading">
-    <div><p class="workspace-kicker">RUANG MAHASISWA</p><h1>Halo, {{ user.nama }}</h1><p class="workspace-lead">Pantau laporan kehilangan Anda dan kabar terbaru dari Security.</p></div>
-    <a class="workspace-button" href="{% url 'buat_laporan' %}"><span aria-hidden="true">＋</span> Buat laporan</a>
-</div>
-<section class="workspace-panel" aria-labelledby="laporan-heading">
-    <div class="panel-heading"><div><p class="workspace-kicker">AKTIVITAS ANDA</p><h2 id="laporan-heading">Laporan kehilangan</h2></div><span class="count-pill">{{ laporan|length }} laporan</span></div>
-    {% if laporan %}
-        <div class="report-list">
-        {% for item in laporan %}
-            <article class="report-row">
-                <div class="report-icon" aria-hidden="true">{{ item.nama_barang|slice:":1"|upper }}</div>
-                <div class="report-main"><div class="report-title-line"><h3>{{ item.nama_barang }}</h3><span class="status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span aria-hidden="true">·</span> {{ item.lokasi }}</p><small>{{ item.tanggal_kehilangan|date:"j F Y" }}{% if item.foto %} <span aria-hidden="true">·</span> Foto terlampir{% endif %}</small></div>
+<div class="dashboard-shell student-dashboard">
+    <div class="dashboard-heading">
+        <div><p class="dashboard-eyebrow">RUANG MAHASISWA</p><h1>Halo, {{ user.nama }}</h1><p class="dashboard-subtitle">Pantau laporan dan kabar terbaru dari Security.</p></div>
+        <a class="dashboard-primary dashboard-primary-orange" href="{% url 'buat_laporan' %}"><span aria-hidden="true">＋</span> Buat laporan kehilangan</a>
+    </div>
+
+    <section class="student-callout" aria-label="Buat laporan kehilangan">
+        <span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        <div><strong>Barang hilang? Mulai dari laporan singkat.</strong><p>Tambahkan detail supaya Security lebih mudah membantu.</p></div>
+        <div class="callout-count"><strong>{{ laporan_aktif }}</strong><span>laporan aktif</span></div>
+    </section>
+
+    <section class="dashboard-panel" aria-labelledby="laporan-heading">
+        <div class="dashboard-panel-head"><div><h2 id="laporan-heading">Laporan saya</h2><p>Pembaruan terakhir ditampilkan lebih dulu.</p></div><span class="dashboard-count">{{ laporan|length }} laporan</span></div>
+        {% if laporan %}
+        <div class="dashboard-report-list">
+            {% for item in laporan %}
+            <article class="dashboard-report-row">
+                <span class="dashboard-item-mark" aria-hidden="true">
+                    {% if item.jenis == 'elektronik' %}<svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M10 6h4M11 18h2"/></svg>
+                    {% elif item.jenis == 'dokumen' %}<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+                    {% else %}<svg viewBox="0 0 24 24"><path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z"/></svg>{% endif %}
+                </span>
+                <div class="dashboard-report-main"><div class="dashboard-report-title"><h3>{{ item.nama_barang }}</h3><span class="dashboard-status status-{{ item.status }}">{{ item.get_status_display }}</span></div><p>{{ item.get_jenis_display }} <span>·</span> {{ item.lokasi }}</p><small>{{ item.tanggal_kehilangan|date:"j F Y" }}{% if item.foto %} <span>·</span> Foto terlampir{% endif %}</small></div>
+                <time class="dashboard-report-date" datetime="{{ item.dibuat_pada|date:'c' }}">{{ item.dibuat_pada|date:"j M Y" }}</time>
             </article>
-        {% endfor %}
+            {% endfor %}
         </div>
-    {% else %}
-        <div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Belum ada laporan</h3><p>Catat barang yang hilang agar tim Security dapat membantu mencarinya.</p><a class="workspace-button" href="{% url 'buat_laporan' %}">Buat laporan pertama</a></div>
-    {% endif %}
-</section>
-<div class="grid workspace-tiles">
-    <a class="tile workspace-tile-link" href="{% url 'daftar_barang_mahasiswa' %}"><h2>Daftar Barang Temuan</h2><p>Lihat barang temuan yang tersedia di kampus <span aria-hidden="true">→</span></p></a>
-    <div class="tile tile-nonaktif"><h2>Ajukan Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
+        {% else %}
+        <div class="dashboard-empty"><span class="dashboard-empty-mark" aria-hidden="true">⌕</span><h3>Belum ada laporan</h3><p>Catat barang yang hilang agar Security dapat membantu mencarinya.</p><a class="dashboard-primary" href="{% url 'buat_laporan' %}">Buat laporan pertama</a></div>
+        {% endif %}
+    </section>
+
+    <div class="student-dashboard-bottom">
+        <section class="dashboard-panel student-steps">
+            <h2>Setelah Anda melapor</h2>
+            <div class="student-step-list">
+                <div class="student-step"><span>01</span><div><strong>Laporan ditinjau</strong><small>Security memeriksa detail laporan.</small></div></div>
+                <div class="student-step"><span>02</span><div><strong>Barang dicocokkan</strong><small>Status diperbarui jika ada temuan.</small></div></div>
+                <div class="student-step"><span>03</span><div><strong>Ambil kembali</strong><small>Petugas memberi arahan selanjutnya.</small></div></div>
+            </div>
+        </section>
+        <aside class="student-found-callout">
+            <p class="dashboard-eyebrow">BARANG DI KAMPUS</p><h2>Sedang mencari barang temuan?</h2><p>Lihat daftar barang yang sudah dicatat oleh Security.</p><a href="{% url 'daftar_barang_mahasiswa' %}">Lihat daftar barang temuan <span aria-hidden="true">→</span></a>
+        </aside>
+    </div>
 </div>
 {% endblock %}
