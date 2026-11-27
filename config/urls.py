@@ -9,4 +9,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("apps.autentikasi.urls")),
     path("", include("apps.laporan.urls")),
+    path("", include("apps.temuan.urls")),
 ]

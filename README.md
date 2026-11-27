@@ -46,14 +46,14 @@ Fitur yang dikembangkan:
 - Dasbor mahasiswa untuk melihat daftar laporan pribadi beserta statusnya (Diajukan, Menunggu, Cocok, dan Selesai).
 - Halaman Security untuk melihat seluruh laporan kehilangan yang masuk.
 
-### Iterasi 3: Modul Pencatatan Barang Temuan (Security)
+### Iterasi 3: Modul Pencatatan Barang Temuan (Security) (Selesai)
 
 **Cakupan:** FR-08 sampai FR-10.
 
 Fitur yang dikembangkan:
 - Formulir pencatatan barang temuan yang mencakup data barang, identitas penemu, lokasi ditemukan, dan lokasi penyimpanan.
-- Fitur pengubahan data dan pembaruan status barang temuan.
-- Halaman daftar barang temuan yang dapat diakses mahasiswa dengan hanya menampilkan informasi non-sensitif.
+- Fitur pengubahan data dan pembaruan status barang temuan (Tersimpan, Dalam proses, dan Diserahkan).
+- Halaman daftar barang temuan untuk mahasiswa yang hanya menampilkan informasi non-sensitif; kontak penemu, ciri rinci, dan lokasi penyimpanan hanya dapat dilihat Security.
 
 ### Iterasi 4: Modul Pencarian dan Pencocokan (Security)
 

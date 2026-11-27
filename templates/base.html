@@ -12,8 +12,8 @@
         {% if user.is_authenticated %}
             <div class="user">
                 <a class="workspace-home" href="{% url 'dasbor' %}">Dasbor</a>
-                {% if user.is_mahasiswa %}<a class="workspace-home" href="{% url 'buat_laporan' %}">Buat laporan</a>{% endif %}
-                {% if user.is_security %}<a class="workspace-home" href="{% url 'daftar_laporan_security' %}">Daftar laporan</a>{% endif %}
+                {% if user.is_mahasiswa %}<a class="workspace-home" href="{% url 'buat_laporan' %}">Buat laporan</a><a class="workspace-home" href="{% url 'daftar_barang_mahasiswa' %}">Barang temuan</a>{% endif %}
+                {% if user.is_security %}<a class="workspace-home" href="{% url 'daftar_laporan_security' %}">Laporan</a><a class="workspace-home" href="{% url 'daftar_barang_security' %}">Barang temuan</a>{% endif %}
                 <span class="user-nama">{{ user.nama }} <small>({{ user.get_role_display }})</small></span>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}

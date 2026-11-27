@@ -12,6 +12,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.http import require_POST
 
 from apps.laporan.models import LaporanKehilangan
+from apps.temuan.models import BarangTemuan
 
 from .decorators import peran_wajib
 from .forms import LoginForm, LupaPasswordForm, RegistrasiForm
@@ -110,7 +111,8 @@ def dasbor_mahasiswa(request):
 @peran_wajib(Pengguna.Peran.SECURITY)
 def dasbor_security(request):
     laporan = LaporanKehilangan.objects.select_related("pelapor").all()[:5]
-    return render(request, "security/dasbor.html", {"laporan": laporan})
+    barang_temuan = BarangTemuan.objects.all()[:5]
+    return render(request, "security/dasbor.html", {"laporan": laporan, "barang_temuan": barang_temuan})
 
 
 def lupa_password(request):

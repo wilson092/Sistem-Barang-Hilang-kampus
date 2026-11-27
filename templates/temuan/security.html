@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block judul %}Kelola Barang Temuan{% endblock %}
+
+{% block konten %}
+<a class="workspace-back" href="{% url 'dasbor_security' %}">← Kembali ke dasbor Security</a>
+<div class="workspace-heading"><div><p class="workspace-kicker">RUANG SECURITY</p><h1>Barang temuan</h1><p class="workspace-lead">Kelola data penemuan, identitas penemu, lokasi penyimpanan, dan status barang.</p></div><a class="workspace-button" href="{% url 'catat_barang' %}"><span aria-hidden="true">＋</span> Catat barang</a></div>
+<section class="security-report-list">
+    {% if barang_list %}{% for barang in barang_list %}
+    <article class="workspace-panel security-report">
+        <div class="report-row security-report-heading"><div class="report-icon" aria-hidden="true">{{ barang.nama_barang|slice:":1"|upper }}</div><div class="report-main"><div class="report-title-line"><h2>{{ barang.nama_barang }}</h2><span class="status status-{{ barang.status }}">{{ barang.get_status_display }}</span></div><p>{{ barang.get_jenis_display }} <span aria-hidden="true">·</span> Ditemukan {{ barang.tanggal_ditemukan|date:"j F Y" }}</p></div><a class="workspace-button edit-item-button" href="{% url 'ubah_barang' barang.pk %}">Ubah data</a></div>
+        <div class="security-details"><div><span class="detail-label">LOKASI DITEMUKAN</span><p>{{ barang.lokasi_ditemukan }}</p></div><div><span class="detail-label">LOKASI PENYIMPANAN</span><p>{{ barang.lokasi_penyimpanan }}</p></div><div><span class="detail-label">PENEMU</span><p>{{ barang.nama_penemu }}{% if barang.kontak_penemu %} <small>· {{ barang.kontak_penemu }}</small>{% endif %}</p></div><div><span class="detail-label">DICATAT OLEH</span><p>{{ barang.dicatat_oleh.nama }}</p></div><div class="detail-wide"><span class="detail-label">DESKRIPSI</span><p>{{ barang.deskripsi }}</p></div>{% if barang.ciri_ciri %}<div class="detail-wide"><span class="detail-label">CIRI-CIRI</span><p>{{ barang.ciri_ciri }}</p></div>{% endif %}</div>
+    </article>
+    {% endfor %}{% else %}<div class="workspace-panel empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h2>Belum ada barang temuan</h2><p>Catat barang yang diserahkan kepada Security untuk mulai mengelola daftar.</p><a class="workspace-button" href="{% url 'catat_barang' %}">Catat barang temuan</a></div>{% endif %}
+</section>
+{% endblock %}

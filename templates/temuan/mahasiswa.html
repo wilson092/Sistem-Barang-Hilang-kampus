@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block judul %}Daftar Barang Temuan{% endblock %}
+
+{% block konten %}
+<a class="workspace-back" href="{% url 'dasbor_mahasiswa' %}">← Kembali ke dasbor mahasiswa</a>
+<div class="workspace-heading"><div><p class="workspace-kicker">INFORMASI KAMPUS</p><h1>Daftar barang temuan</h1><p class="workspace-lead">Barang yang sudah diserahkan kepada Security akan ditampilkan di sini.</p></div><span class="count-pill count-large">{{ barang_list|length }} barang</span></div>
+<div class="public-notice"><span aria-hidden="true">ⓘ</span> Demi privasi, informasi kontak penemu, ciri rinci, dan lokasi penyimpanan hanya dapat dilihat oleh Security.</div>
+<section class="workspace-panel" aria-label="Daftar barang temuan">
+    {% if barang_list %}<div class="report-list">
+        {% for barang in barang_list %}<article class="report-row public-found-item"><div class="report-icon" aria-hidden="true">{{ barang.nama_barang|slice:":1"|upper }}</div><div class="report-main"><div class="report-title-line"><h3>{{ barang.nama_barang }}</h3><span class="status status-{{ barang.status }}">{{ barang.get_status_display }}</span></div><p>{{ barang.get_jenis_display }} <span aria-hidden="true">·</span> {{ barang.lokasi_ditemukan }}</p><small>Ditemukan {{ barang.tanggal_ditemukan|date:"j F Y" }}</small><div class="public-description">{{ barang.deskripsi }}</div></div></article>{% endfor %}
+    </div>{% else %}<div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h2>Belum ada barang tercatat</h2><p>Silakan cek kembali nanti. Barang yang dicatat Security akan muncul di sini.</p></div>{% endif %}
+</section>
+{% endblock %}

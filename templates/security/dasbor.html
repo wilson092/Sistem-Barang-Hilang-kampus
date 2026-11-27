@@ -17,7 +17,8 @@
     </div>{% else %}<div class="empty-state"><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Belum ada laporan masuk</h3><p>Laporan baru dari mahasiswa akan muncul di sini.</p></div>{% endif %}
 </section>
 <div class="grid workspace-tiles">
-    <div class="tile tile-nonaktif"><h2>Catat Barang Temuan</h2><p>Akan tersedia pada Iterasi 3</p></div>
+    <a class="tile workspace-tile-link" href="{% url 'catat_barang' %}"><h2>Catat Barang Temuan</h2><p>Tambahkan barang yang ditemukan ke daftar <span aria-hidden="true">→</span></p></a>
+    <a class="tile workspace-tile-link" href="{% url 'daftar_barang_security' %}"><h2>Kelola Barang Temuan</h2><p>Lihat, ubah data, dan perbarui status <span aria-hidden="true">→</span></p></a>
     <div class="tile tile-nonaktif"><h2>Cari dan Cocokkan</h2><p>Akan tersedia pada Iterasi 4</p></div>
     <div class="tile tile-nonaktif"><h2>Kelola Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
 </div>

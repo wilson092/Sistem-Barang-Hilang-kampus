@@ -23,7 +23,7 @@
     {% endif %}
 </section>
 <div class="grid workspace-tiles">
-    <div class="tile tile-nonaktif"><h2>Daftar Barang Temuan</h2><p>Akan tersedia pada Iterasi 3</p></div>
+    <a class="tile workspace-tile-link" href="{% url 'daftar_barang_mahasiswa' %}"><h2>Daftar Barang Temuan</h2><p>Lihat barang temuan yang tersedia di kampus <span aria-hidden="true">→</span></p></a>
     <div class="tile tile-nonaktif"><h2>Ajukan Klaim</h2><p>Akan tersedia pada Iterasi 5</p></div>
 </div>
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block judul %}{% if mode == 'ubah' %}Ubah Barang Temuan{% else %}Catat Barang Temuan{% endif %}{% endblock %}
+
+{% block konten %}
+<a class="workspace-back" href="{% url 'daftar_barang_security' %}">← Kembali ke daftar barang temuan</a>
+<div class="workspace-heading form-heading"><div><p class="workspace-kicker">MODUL BARANG TEMUAN</p><h1>{% if mode == 'ubah' %}Ubah data barang{% else %}Catat barang temuan{% endif %}</h1><p class="workspace-lead">Data kontak penemu dan lokasi penyimpanan hanya dapat dilihat oleh Security.</p></div><span class="form-step">{% if mode == 'ubah' %}UBAH{% else %}BARU{% endif %}</span></div>
+<form class="workspace-panel report-form" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-section-title"><span>01</span><div><h2>Informasi barang</h2><p>Data yang digunakan untuk mengenali dan mencocokkan barang.</p></div></div>
+    <div class="form-grid">
+        <div class="form-field"><label for="{{ form.nama_barang.id_for_label }}">{{ form.nama_barang.label }} <span aria-hidden="true">*</span></label>{{ form.nama_barang }}{% for error in form.nama_barang.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.jenis.id_for_label }}">{{ form.jenis.label }} <span aria-hidden="true">*</span></label>{{ form.jenis }}{% for error in form.jenis.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field form-field-wide"><label for="{{ form.deskripsi.id_for_label }}">{{ form.deskripsi.label }} <span aria-hidden="true">*</span></label>{{ form.deskripsi }}{% for error in form.deskripsi.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field form-field-wide"><label for="{{ form.ciri_ciri.id_for_label }}">{{ form.ciri_ciri.label }}</label>{{ form.ciri_ciri }}<small>Ciri rinci hanya ditampilkan kepada petugas Security.</small>{% for error in form.ciri_ciri.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="form-section-title form-section-next"><span>02</span><div><h2>Informasi penemuan</h2><p>Lokasi dan tanggal barang ditemukan.</p></div></div>
+    <div class="form-grid">
+        <div class="form-field"><label for="{{ form.lokasi_ditemukan.id_for_label }}">{{ form.lokasi_ditemukan.label }} <span aria-hidden="true">*</span></label>{{ form.lokasi_ditemukan }}{% for error in form.lokasi_ditemukan.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.tanggal_ditemukan.id_for_label }}">{{ form.tanggal_ditemukan.label }} <span aria-hidden="true">*</span></label>{{ form.tanggal_ditemukan }}{% for error in form.tanggal_ditemukan.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="form-section-title form-section-next"><span>03</span><div><h2>Identitas penemu dan penyimpanan</h2><p>Informasi ini tidak ditampilkan pada daftar mahasiswa.</p></div></div>
+    <div class="form-grid">
+        <div class="form-field"><label for="{{ form.nama_penemu.id_for_label }}">{{ form.nama_penemu.label }} <span aria-hidden="true">*</span></label>{{ form.nama_penemu }}{% for error in form.nama_penemu.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.kontak_penemu.id_for_label }}">{{ form.kontak_penemu.label }}</label>{{ form.kontak_penemu }}{% for error in form.kontak_penemu.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.lokasi_penyimpanan.id_for_label }}">{{ form.lokasi_penyimpanan.label }} <span aria-hidden="true">*</span></label>{{ form.lokasi_penyimpanan }}{% for error in form.lokasi_penyimpanan.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+        <div class="form-field"><label for="{{ form.status.id_for_label }}">{{ form.status.label }} <span aria-hidden="true">*</span></label>{{ form.status }}{% for error in form.status.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+    </div>
+    <div class="form-footer"><p><span aria-hidden="true">ℹ</span> Pastikan informasi lokasi penyimpanan selalu diperbarui.</p><button class="workspace-button" type="submit">{% if mode == 'ubah' %}Simpan perubahan{% else %}Simpan barang temuan{% endif %}<span aria-hidden="true">→</span></button></div>
+</form>
+{% endblock %}
